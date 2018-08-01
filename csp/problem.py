@@ -1,21 +1,20 @@
 class Problem:
 
-    variables = {}
+    variables = []
     constraints = []
 
 
-    def __init__(self, solver, vars, constrs):
-        self.solver = solver
+    def __init__(self, vars, constrs):
         self.variables = vars
         self.constraints = constrs
 
 
     def is_solution(self, assignment):
-        if len(variables) != len(assignment):
-            return false
+        if len(self.variables) != len(assignment):
+            return False
 
-        for c in constraints:
+        for c in self.constraints:
             if not c.satisfied(assignment):
-                return false
+                return False
 
-        return true
+        return True

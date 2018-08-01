@@ -1,0 +1,1 @@
+from csp.constraints.all_diff import AllDiff

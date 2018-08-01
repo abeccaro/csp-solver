@@ -1,13 +1,18 @@
 import unittest
 from csp import *
-from csp.solvers import *
 
 
 class Test(unittest.TestCase):
 
     def test_sample(self):
-        prob = Problem([Variable('a', [0, 1])], [])
+        vars = [Variable('a', [0, 1]),
+                Variable('b', [0, 1])]
+        constraints = [AllDiff(['a', 'b'])]
+
+        prob = Problem(vars, constraints)
+
         solver = BacktrackSolver()
+
         print('Solution:\n')
         print(solver.solve(prob))
         self.assertTrue(True)

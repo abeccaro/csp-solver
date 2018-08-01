@@ -10,10 +10,10 @@ class Assignment:
 
     def __str__(self):
         s = ''
-        for a in self.assignments:
-            s += a.name
+        for var in self.assignments:
+            s += var
             s += ' = '
-            s += str(self.assignments[a])
+            s += str(self.assignments[var])
             s += '\n'
         return s
 
@@ -23,5 +23,5 @@ class Assignment:
         return copy
 
 
-    def assign(self, var, value):
-        self.assignments[var] = value
+    def assign(self, name, value):
+        self.assignments[name] = value

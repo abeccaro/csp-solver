@@ -19,7 +19,7 @@ class BacktrackSolver(Solver):
         # TODO: implement different variable orders (strategy pattern)
         i = 0
         v = problem.variables[i]
-        while v in assignment.assignments:
+        while v.name in assignment.assignments:
             i += 1
             v = problem.variables[i]
 
@@ -27,7 +27,7 @@ class BacktrackSolver(Solver):
         for value in v.domain:
             # make new assignment v = value
             new_assignment = deepcopy(assignment)
-            new_assignment.assignments[v] = value
+            new_assignment.assign(v.name, value)
 
             # inference
             # TODO: implement inferences (strategy pattern)

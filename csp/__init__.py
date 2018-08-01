@@ -1,5 +1,7 @@
 from csp.assignment import Assignment
-from csp.constraint import Constraint
 from csp.problem import Problem
 from csp.variable import Variable
-from csp import solvers
+
+from csp.solvers import BacktrackSolver
+
+from csp.constraints import AllDiff

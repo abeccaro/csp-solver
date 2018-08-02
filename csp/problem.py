@@ -1,12 +1,15 @@
 class Problem:
 
-    variables = []
-    constraints = []
-
-
-    def __init__(self, vars, constrs):
+    def __init__(self, vars = [], constrs = []):
         self.variables = vars
         self.constraints = constrs
+
+
+    def add_variable(self, var):
+            self.variables.append(var)
+
+    def add_constraint(self, constr):
+        self.constraints.append(constr)
 
 
     def is_solution(self, assignment):

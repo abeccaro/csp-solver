@@ -14,3 +14,10 @@ class AllDiff(Constraint):
                 return False
             s.add(assignment.assignments[var])
         return True
+
+    def remove_inconsistent_values(self, assignment, updated):
+        if updated in self.vars:
+            value = assignment.assignments[updated]
+            for v in self.vars:
+                if v != updated and value in assignment.domains[v]:
+                    assignment.remove_from_domain(v, value)

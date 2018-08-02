@@ -37,11 +37,55 @@ class Test(unittest.TestCase):
                 prob.add_constraint(AllDiff(square_vars))
 
 
+        prob.add_constraint(EqualsValue('1,2', 5))
+        prob.add_constraint(EqualsValue('1,3', 2))
+        prob.add_constraint(EqualsValue('1,4', 6))
+        prob.add_constraint(EqualsValue('1,7', 4))
+        prob.add_constraint(EqualsValue('1,8', 8))
+
+        prob.add_constraint(EqualsValue('3,1', 4))
+        prob.add_constraint(EqualsValue('3,2', 9))
+        prob.add_constraint(EqualsValue('3,4', 7))
+        prob.add_constraint(EqualsValue('3,5', 8))
+        prob.add_constraint(EqualsValue('3,6', 3))
+        prob.add_constraint(EqualsValue('3,8', 6))
+        prob.add_constraint(EqualsValue('3,9', 2))
+
+        prob.add_constraint(EqualsValue('4,3', 5))
+        prob.add_constraint(EqualsValue('4,5', 4))
+        prob.add_constraint(EqualsValue('4,7', 8))
+        prob.add_constraint(EqualsValue('4,9', 9))
+
+        prob.add_constraint(EqualsValue('5,3', 6))
+        prob.add_constraint(EqualsValue('5,7', 7))
+
+        prob.add_constraint(EqualsValue('6,1', 2))
+        prob.add_constraint(EqualsValue('6,3', 3))
+        prob.add_constraint(EqualsValue('6,5', 7))
+        prob.add_constraint(EqualsValue('6,7', 1))
+
+        prob.add_constraint(EqualsValue('7,1', 1))
+        prob.add_constraint(EqualsValue('7,2', 2))
+        prob.add_constraint(EqualsValue('7,4', 5))
+        prob.add_constraint(EqualsValue('7,5', 3))
+        prob.add_constraint(EqualsValue('7,6', 9))
+        prob.add_constraint(EqualsValue('7,8', 7))
+        prob.add_constraint(EqualsValue('7,9', 4))
+
+        prob.add_constraint(EqualsValue('9,2', 7))
+        prob.add_constraint(EqualsValue('9,3', 9))
+        prob.add_constraint(EqualsValue('9,6', 8))
+        prob.add_constraint(EqualsValue('9,7', 3))
+        prob.add_constraint(EqualsValue('9,8', 5))
+
+
         inf = ForwardChecking()
         solver = BacktrackSolver(inf)
 
+        solution = solver.solve(prob)
+
         print('Solution:')
-        print(solver.solve(prob))
+        print(solution)
         self.assertTrue(True)
 
 

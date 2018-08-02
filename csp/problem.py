@@ -11,6 +11,9 @@ class Problem:
     def add_constraint(self, constr):
         self.constraints.append(constr)
 
+    def remove_constraint(self, constr):
+        self.constraints.remove(constr)
+
 
     def is_solution(self, assignment):
         if len(self.variables) != len(assignment):

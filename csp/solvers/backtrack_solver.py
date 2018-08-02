@@ -1,7 +1,8 @@
 from copy import deepcopy
+
 from csp import Assignment
 from csp.solvers.solver import Solver
-from csp.inferences import *
+from csp.inferences import NoInference, NodeConsistency
 
 class BacktrackSolver(Solver):
 
@@ -10,7 +11,20 @@ class BacktrackSolver(Solver):
 
 
     def solve(self, problem):
-        return self.__solve_recursive(problem, Assignment(problem.variables))
+        a = Assignment(problem.variables)
+
+        # apply node consistency and delete unary constraints
+        for c in problem.constraints:
+            if len(c.vars) == 1:
+                c.remove_inconsistent_values(a, '')
+                problem.remove_constraint(c)
+
+        for v in a.domains:
+            if len(a.domains[v]) == 1:
+                a.assign(v, a.domains[v][0])
+                self.inference.infer(a, problem.constraints, v)
+
+        return self.__solve_recursive(problem, a)
 
 
     def __solve_recursive(self, problem, assignment):

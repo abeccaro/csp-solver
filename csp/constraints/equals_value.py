@@ -3,6 +3,8 @@ from csp.constraints.constraint import Constraint
 class EqualsValue(Constraint):
 
     def __init__(self, var, value):
+        super(EqualsValue, self).__init__()
+        self.vars = [var]
         self.var = var
         self.value = value
 
@@ -13,5 +15,4 @@ class EqualsValue(Constraint):
         return False
 
     def remove_inconsistent_values(self, assignment, updated):
-        if updated == self.var:
-            assignment.update_domain(self.var, [self.value])
+        assignment.update_domain(self.var, [self.value])

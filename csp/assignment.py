@@ -14,7 +14,7 @@ class Assignment:
 
     def __str__(self):
         s = ''
-        for var in self.assignments:
+        for var in sorted(self.assignments):
             s += var + ' = ' + str(self.assignments[var]) + '\n'
         return s
 

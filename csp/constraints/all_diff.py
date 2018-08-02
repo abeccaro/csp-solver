@@ -4,6 +4,7 @@ class AllDiff(Constraint):
 
     # vars is a list of variables names
     def __init__(self, vars):
+        super(AllDiff, self).__init__()
         self.vars = vars
 
 

@@ -80,7 +80,8 @@ class Test(unittest.TestCase):
 
 
         inf = ForwardChecking()
-        solver = BacktrackSolver(inf)
+        var_sel = MinRemainingValues()
+        solver = BacktrackSolver(inf, var_sel)
 
         solution = solver.solve(prob)
 

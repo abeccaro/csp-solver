@@ -7,3 +7,5 @@ from csp.solvers import *
 from csp.constraints import *
 
 from csp.inferences import *
+
+from csp.var_select import *

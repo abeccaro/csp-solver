@@ -1,13 +1,15 @@
 from copy import deepcopy
 
-from csp import Assignment
 from csp.solvers.solver import Solver
-from csp.inferences import NoInference, NodeConsistency
+from csp import Assignment
+from csp.inferences import NoInference
+from csp.var_select import DefaultOrder
 
 class BacktrackSolver(Solver):
 
-    def __init__(self, inference = NoInference()):
+    def __init__(self, inference = NoInference(), var_select = DefaultOrder()):
         self.inference = inference
+        self.var_select = var_select
 
 
     def solve(self, problem):
@@ -35,12 +37,8 @@ class BacktrackSolver(Solver):
             return None
 
         # Get an unassigned variable
-        # TODO: implement different variable orders (strategy pattern)
-        i = 0
-        v = problem.variables[i].name
-        while v in assignment.assignments:
-            i += 1
-            v = problem.variables[i].name
+        # TODO: implement other variable selection strategies (least constraining value)
+        v = self.var_select.next_var(assignment)
 
         # TODO: order v.domain (strategy pattern)
         for value in assignment.domains[v]:

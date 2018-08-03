@@ -1,11 +1,17 @@
 from csp.constraints.constraint import Constraint
 
 class AllDiff(Constraint):
+    """Class that represents Alldiff constraint.
+
+    The Alldiff constraint is satisfied if all considered variables assume different values.
+
+    :param vars: A list of the names of the variables this constraint relies on
+    :type vars: list
+    """
 
     # vars is a list of variables names
     def __init__(self, vars):
-        super(AllDiff, self).__init__()
-        self.vars = vars
+        super(AllDiff, self).__init__(vars)
 
 
     def satisfied(self, assignment):

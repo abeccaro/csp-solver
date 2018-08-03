@@ -2,7 +2,10 @@ from copy import deepcopy
 
 class Assignment:
 
-    def __init__(self, vars = []):
+    def __init__(self, vars = None):
+        if vars is None:
+            vars = []
+
         self.assignments = {}
         self.domains = {}
         for v in vars:

@@ -1,6 +1,11 @@
 class Problem:
 
-    def __init__(self, vars = [], constrs = []):
+    def __init__(self, vars = None, constrs = None):
+        if constrs is None:
+            constrs = []
+        if vars is None:
+            vars = []
+
         self.variables = vars
         self.constraints = constrs
 

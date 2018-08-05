@@ -84,4 +84,5 @@ class Assignment:
         :param value: The value to remove
         :type name: str
         """
-        self.domains[name].remove(value)
+        if value in self.domains[name]:
+            self.domains[name].remove(value)

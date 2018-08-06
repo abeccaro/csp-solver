@@ -37,6 +37,16 @@ class NQueensTests(unittest.TestCase):
         return prob
 
 
+    def test_2x2(self):
+        prob = self._n_queens_problem(2)
+
+        inf = ForwardChecking()
+        var_sel = MinRemainingValues()
+        solver = BacktrackSolver(inf, var_sel)
+
+        solution = solver.solve(prob)
+        self.assertEqual(solution, None)
+
     def test_8x8(self):
         prob = self._n_queens_problem(8)
 

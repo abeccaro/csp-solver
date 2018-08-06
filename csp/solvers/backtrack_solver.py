@@ -35,7 +35,10 @@ class BacktrackSolver(Solver):
                 self._inference.infer(a, problem.constraints, v)
 
         # calling recursive search procedure
-        return (self._solve_recursive(problem, a)).assignments
+        sol = self._solve_recursive(problem, a)
+        if sol is None:
+            return None
+        return sol.assignments
 
 
     def _solve_recursive(self, problem, assignment):

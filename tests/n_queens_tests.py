@@ -44,8 +44,12 @@ class NQueensTests(unittest.TestCase):
         var_sel = MinRemainingValues()
         solver = BacktrackSolver(inf, var_sel)
 
-        solution = solver.solve(prob)
+        solution, stats = solver.solve(prob)
         self.assertEqual(solution, None)
+
+        print('2-queens:\n')
+        pprint(solution)
+        print(stats)
 
     def test_8x8(self):
         prob = self._n_queens_problem(8)
@@ -54,8 +58,11 @@ class NQueensTests(unittest.TestCase):
         var_sel = MinRemainingValues()
         solver = BacktrackSolver(inf, var_sel)
 
-        solution = solver.solve(prob)
+        solution, stats = solver.solve(prob)
+
+        print('\n\n8-queens:\n')
         pprint(solution)
+        print(stats)
 
 
 if __name__ == '__main__':

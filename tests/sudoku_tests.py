@@ -1,5 +1,6 @@
 import unittest
 from copy import copy
+from pprint import pprint
 
 from csp import *
 
@@ -99,7 +100,7 @@ class SudokuTests(unittest.TestCase):
         solver = BacktrackSolver(inf, var_sel)
 
         #calculating solution
-        solution = solver.solve(prob)
+        solution, stats = solver.solve(prob)
 
         expected = self._sudoku_solution([
             [3, 5, 2, 6, 9, 1, 4, 8, 7],
@@ -113,6 +114,10 @@ class SudokuTests(unittest.TestCase):
             [6, 7, 9, 4, 2, 8, 3, 5, 1]
         ])
         self.assertEqual(solution, expected)
+
+        print('Sudoku easy 1:\n')
+        pprint(solution)
+        print(stats)
 
 
     # Hard
@@ -140,7 +145,7 @@ class SudokuTests(unittest.TestCase):
         solver = BacktrackSolver(inf, var_sel)
 
         #calculating solution
-        solution = solver.solve(prob)
+        solution, stats = solver.solve(prob)
 
 
         expected = self._sudoku_solution([
@@ -155,6 +160,10 @@ class SudokuTests(unittest.TestCase):
             [9, 6, 3, 7, 4, 1, 5, 8, 2]
         ])
         self.assertEqual(solution, expected)
+
+        print('Sudoku hard 1:\n')
+        pprint(solution)
+        print(stats)
 
 
 if __name__ == '__main__':

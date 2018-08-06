@@ -1,6 +1,8 @@
 from copy import deepcopy
+import time
 
 from csp.solvers.solver import Solver
+from csp.solvers.search_stats import SearchStats
 from csp import Assignment
 from csp.inferences import NoInference
 from csp.var_select import DefaultOrder
@@ -20,6 +22,9 @@ class BacktrackSolver(Solver):
 
 
     def solve(self, problem):
+        stats = SearchStats()
+        start = time.time()
+
         a = Assignment(problem.variables)
 
         # apply node consistency and delete unary constraints
@@ -35,13 +40,16 @@ class BacktrackSolver(Solver):
                 self._inference.infer(a, problem.constraints, v)
 
         # calling recursive search procedure
-        sol = self._solve_recursive(problem, a)
+        sol = self._solve_recursive(problem, a, stats)
+
+        stats.time = time.time() - start
+
         if sol is None:
-            return None
-        return sol.assignments
+            return None, stats
+        return sol.assignments, stats
 
 
-    def _solve_recursive(self, problem, assignment):
+    def _solve_recursive(self, problem, assignment, stats):
         """Solves given problem starting from given assignment.
 
         This method actually implements the backtracking logic, so it performs success or fail detection and variables
@@ -49,8 +57,10 @@ class BacktrackSolver(Solver):
 
         :param problem: The problem to solve
         :param assignment: The starting assignment
+        :param stats: The search stats
         :type problem: Problem
         :type assignment: Assignment
+        :type stats: SearchStats
         :return: The solution or None
         :rtype: Assignment
         """
@@ -60,6 +70,7 @@ class BacktrackSolver(Solver):
 
         # if all variables are assigned but 'assignment' is not a solution then fail
         if len(assignment) == len(problem.variables):
+            stats.explored_sol += 1
             return None
 
         # Get an unassigned variable
@@ -80,9 +91,11 @@ class BacktrackSolver(Solver):
                     return None
 
             # recursive call and eventual solution return
-            solution = self._solve_recursive(problem, new_assignment)
+            solution = self._solve_recursive(problem, new_assignment, stats)
             if solution is not None:
                 return solution
+
+            stats.backtracks += 1
 
         # if this point is reached there's no solution with given assignment
         return None

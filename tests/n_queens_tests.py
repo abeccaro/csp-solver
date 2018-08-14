@@ -1,5 +1,4 @@
 import unittest
-from copy import copy
 from pprint import pprint
 
 from csp import *
@@ -18,51 +17,50 @@ class NQueensTests(unittest.TestCase):
         prob = Problem()
 
         # variables
-        # one variable for each column, value is number of row
-        d = list(range(1, n+1))
-        for i in range(n):
-            v = Variable(str(i+1), copy(d))
+        # one variable for each row, value is number of col
+        d = [i + 1 for i in range(n)]
+        vars = int_var_array(n, d)
+        for v in vars:
             prob.add_variable(v)
 
         # row constraints
-        prob.add_constraint(AllDiff([v.name for v in prob.variables]))
+        prob.add_constraint(all_diff(vars))
 
         # diagonals constraint
         for i in range(n):
             for j in range(n):
                 if i != j:
-                    prob.add_constraint(DiffNotEqualValue(str(i+1), str(j+1), i - j))
-                    prob.add_constraint(DiffNotEqualValue(str(j+1), str(i+1), i - j))
+                    prob.add_constraint(arithmetic(vars[i], Operator.minus, vars[j], Operator.ne, i - j))
+                    prob.add_constraint(arithmetic(vars[j], Operator.minus, vars[i], Operator.ne, i - j))
 
-        return prob
+        return prob, vars
 
 
     def test_2x2(self):
-        prob = self._n_queens_problem(2)
+        prob, vars = self._n_queens_problem(2)
 
-        inf = ForwardChecking()
-        var_sel = MinRemainingValues()
-        solver = BacktrackSolver(inf, var_sel)
+        prop = FCPropagator()
+        solver = BacktrackSolver(prop)
 
-        solution, stats = solver.solve(prob)
-        self.assertEqual(solution, None)
+        solved = solver.solve(prob)
 
-        print('2-queens:\n')
-        pprint(solution)
-        print(stats)
+        self.assertEqual(solved, False)
+
+        print('\n2 queens:\nNo solution')
 
     def test_8x8(self):
-        prob = self._n_queens_problem(8)
+        prob, vars = self._n_queens_problem(8)
 
-        inf = ForwardChecking()
-        var_sel = MinRemainingValues()
-        solver = BacktrackSolver(inf, var_sel)
+        prop = FCPropagator()
+        solver = BacktrackSolver(prop)
 
-        solution, stats = solver.solve(prob)
+        solved = solver.solve(prob)
 
-        print('\n\n8-queens:\n')
+        self.assertEqual(solved, True)
+
+        solution = [v.get_value() for v in vars]
+        print('\n8 queens:')
         pprint(solution)
-        print(stats)
 
 
 if __name__ == '__main__':

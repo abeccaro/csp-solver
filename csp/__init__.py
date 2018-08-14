@@ -1,11 +1,10 @@
-from csp.assignment import Assignment
+from csp.contradiction_exception import ContradictionException
 from csp.problem import Problem
-from csp.variable import Variable
 
-from csp.solvers import *
+from csp.variables import *
 
 from csp.constraints import *
 
-from csp.inferences import *
+from csp.propagators import *
 
-from csp.var_select import *
+from csp.solver import *

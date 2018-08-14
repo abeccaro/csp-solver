@@ -1,30 +1,37 @@
 from csp.constraints.constraint import Constraint
 
+
 class AllDiff(Constraint):
-    """Class that represents Alldiff constraint.
-
-    The Alldiff constraint is satisfied if all considered variables assume different values.
-
-    :param vars: A list of the names of the variables this constraint relies on
-    :type vars: list
+    """Constraint that forces all variables to have the same value.
+    
+    :param name: The name
+    :param vars: The variables
+    :type name: str
+    :type vars: list[IntVariable]
     """
-
-    # vars is a list of variables names
-    def __init__(self, vars):
-        super(AllDiff, self).__init__(vars)
-
-
-    def satisfied(self, assignment):
-        s = set()
-        for var in self.vars:
-            if var not in assignment.assignments or assignment.assignments[var] in s:
+    
+    def __init__(self, name, vars):
+        super().__init__(name)
+        self.vars = vars
+    
+    
+    def get_vars(self):
+        return self.vars
+    
+    def is_satisfied(self):
+        for i in range(len(self.vars)):
+            v = self.vars[i].get_value()
+            if v is None:
                 return False
-            s.add(assignment.assignments[var])
+            for j in range(i):
+                if v == self.vars[j].get_value():
+                    return False
+        
         return True
-
-    def remove_inconsistent_values(self, assignment, updated):
-        if updated in self.vars:
-            value = assignment.assignments[updated]
+    
+    def propagate(self, var):
+        val = var.get_value()
+        if val is not None:
             for v in self.vars:
-                if v != updated and value in assignment.domains[v]:
-                    assignment.remove_from_domain(v, value)
+                if v != var:
+                    v.remove_value(val)

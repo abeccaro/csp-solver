@@ -1,37 +1,42 @@
 from abc import ABC, abstractmethod
 
+
 class Constraint(ABC):
-    """Abstract class that models a constraint.
-
-    :param vars: A list of the names of the variables this constraint relies on
-    :type vars: list
+    """Abstract class that represents a constraint.
+    
+    :param name: The name of this constraint
+    :type name: str
     """
-
+    
+    def __init__(self, name):
+        self.name = name
+    
+    
     @abstractmethod
-    def __init__(self, vars):
-        self.vars = vars
+    def get_vars(self):
+        """Returns a list of the variables this constraint relies on.
 
-
+        :return: The list of the variables this constraint relies on
+        :rtype: list[Variable]
+        """
+        pass
+    
     @abstractmethod
-    def satisfied(self, assignment):
-        """Checks if this constraint is satisfied by given assignment
-
-        :param assignment: The assignment
-        :type assignment: Assignment
-        :return: True if constraint is satisfied, false otherwise
+    def is_satisfied(self):
+        """Checks if this constraint is satisfied with current assignments.
+        
+        If any variable is not instantiated yet this should return False.
+        
+        :return: True if constraint is satisfied, False otherwise
         :rtype: bool
         """
         pass
-
+    
     @abstractmethod
-    def remove_inconsistent_values(self, assignment, updated):
-        """Removes inconsistent values from given assignment after 'updated' variable was updated
-
-        This is called when inference is done
-
-        :param assignment: The current assignment
-        :param updated: The name of the updated variable
-        :type assignment: Assignment
-        :type updated: str
+    def propagate(self, var):
+        """Adjusts each variable domain given that var domain has changed.
+        
+        :param var: The variable that has changed
+        :type var: Variable
         """
         pass

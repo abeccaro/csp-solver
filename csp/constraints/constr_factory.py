@@ -1,10 +1,17 @@
 from csp import Variable
 
-from csp.constraints.all_diff import AllDiff
-from csp.constraints.x_equals_y import XEqualsY
-from csp.constraints.x_equals_k import XEqualsK
-from csp.constraints.diff_not_equal_k import DiffNotEqualK
 from csp.constraints.operator import Operator
+
+from csp.constraints.all_diff import AllDiff
+
+from csp.constraints.x_equals_k import XEqualsK
+from csp.constraints.x_not_equal_k import XNotEqualK
+from csp.constraints.x_less_or_equal_k import XLessOrEqualK
+from csp.constraints.x_greater_or_equal_k import XGreaterOrEqualK
+
+from csp.constraints.x_equals_y import XEqualsY
+
+from csp.constraints.diff_not_equal_k import DiffNotEqualK
 
 
 __constr_id = -1
@@ -70,16 +77,16 @@ def arithmetic(v1, op1, v2, op2=None, v3=None, name=None):
         else:  # var1 op1 val
             if op1 is Operator.eq:  # X = k
                 return XEqualsK(name, v1, v2)
-            elif op1 is Operator.ne:  # X != Y
-                raise NotImplementedError()
-            elif op1 is Operator.lt:  # X < Y
-                raise NotImplementedError()
-            elif op1 is Operator.le:  # X <= Y
-                raise NotImplementedError()
-            elif op1 is Operator.gt:  # X > Y
-                raise NotImplementedError()
-            elif op1 is Operator.ge:  # X >= Y
-                raise NotImplementedError()
+            elif op1 is Operator.ne:  # X != k
+                return XNotEqualK(name, v1, v2)
+            elif op1 is Operator.lt:  # X < k --> X <= k-1
+                return XLessOrEqualK(name, v1, v2 - 1)
+            elif op1 is Operator.le:  # X <= k
+                return XLessOrEqualK(name, v1, v2)
+            elif op1 is Operator.gt:  # X > k --> X >= k+1
+                return XGreaterOrEqualK(name, v1, v2 + 1)
+            elif op1 is Operator.ge:  # X >= k
+                return XGreaterOrEqualK(name, v1, v2)
             else:
                 raise err
 

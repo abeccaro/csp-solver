@@ -1,5 +1,6 @@
 from csp.solver import Solver
 from csp import ContradictionException
+from csp.propagators import ArcConsistencyPropagator
 
 
 class BacktrackSolver(Solver):
@@ -9,7 +10,7 @@ class BacktrackSolver(Solver):
     :type prop: Propagator
     """
     
-    def __init__(self, prop):
+    def __init__(self, prop=ArcConsistencyPropagator()):
         super(BacktrackSolver, self).__init__(prop)
     
     

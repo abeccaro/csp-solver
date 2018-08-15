@@ -39,8 +39,7 @@ class NQueensTests(unittest.TestCase):
     def test_2x2(self):
         prob, vars = self._n_queens_problem(2)
 
-        prop = FCPropagator()
-        solver = BacktrackSolver(prop)
+        solver = BacktrackSolver()
 
         solved = solver.solve(prob)
 
@@ -51,8 +50,7 @@ class NQueensTests(unittest.TestCase):
     def test_8x8(self):
         prob, vars = self._n_queens_problem(8)
 
-        prop = FCPropagator()
-        solver = BacktrackSolver(prop)
+        solver = BacktrackSolver()
 
         solved = solver.solve(prob)
 

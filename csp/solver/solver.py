@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 
-from csp.propagators.fc_propagator import FCPropagator
+from csp.propagators import ArcConsistencyPropagator
 
 
 class Solver(ABC):
@@ -10,7 +10,7 @@ class Solver(ABC):
     :type prop: Propagator
     """
     
-    def __init__(self, prop=FCPropagator()):  # FIXME: set arc consistency as default
+    def __init__(self, prop=ArcConsistencyPropagator()):
         self.prop = prop
     
     

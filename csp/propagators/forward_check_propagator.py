@@ -2,7 +2,7 @@ from csp.propagators.propagator import Propagator
 from csp import ContradictionException
 
 
-class FCPropagator(Propagator):
+class ForwardCheckPropagator(Propagator):
     """Propagator that applies forward checking."""
     
     def __init__(self):

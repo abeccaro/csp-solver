@@ -68,8 +68,7 @@ class SudokuTests(unittest.TestCase):
             [0, 7, 9, 0, 0, 8, 3, 5, 0]
         ])
 
-        prop = FCPropagator()
-        solver = BacktrackSolver(prop)
+        solver = BacktrackSolver()
 
         solver.solve(prob)
         solution = [[v.get_value() for v in row] for row in vars]
@@ -103,8 +102,7 @@ class SudokuTests(unittest.TestCase):
             [9, 0, 0, 0, 0, 0, 5, 0, 0]
         ])
 
-        prop = FCPropagator()
-        solver = BacktrackSolver(prop)
+        solver = BacktrackSolver()
 
         solver.solve(prob)
         solution = [[v.get_value() for v in row] for row in vars]
@@ -138,8 +136,7 @@ class SudokuTests(unittest.TestCase):
             [0, 8, 0, 9, 0, 0, 0, 7, 3]
         ])
 
-        prop = FCPropagator()
-        solver = BacktrackSolver(prop)
+        solver = BacktrackSolver()
 
         solver.solve(prob)
         solution = [[v.get_value() for v in row] for row in vars]

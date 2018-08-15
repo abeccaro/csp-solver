@@ -46,6 +46,8 @@ class EnumeratedIntVar(IntVariable):
                 self.update_lb(min(self._values), False)
             if value == self.ub:
                 self.update_ub(max(self._values), False)
+            if self.domain_size() == 1:
+                self.instantiate_to(self.lb, False)
 
             if propagate:
                 self.notify()
@@ -66,6 +68,8 @@ class EnumeratedIntVar(IntVariable):
             self.update_lb(min(self._values), False)
         if self.ub in values:
             self.update_ub(max(self._values), False)
+        if self.domain_size() == 1:
+            self.instantiate_to(self.lb, False)
 
         if old_len > self.domain_size():
             if propagate:
@@ -86,6 +90,8 @@ class EnumeratedIntVar(IntVariable):
             self.update_lb(min(self._values), False)
         if start <= self.ub <= end:
             self.update_ub(max(self._values), False)
+        if self.domain_size() == 1:
+            self.instantiate_to(self.lb, False)
 
         if old_len > self.domain_size():
             if propagate:
@@ -106,6 +112,8 @@ class EnumeratedIntVar(IntVariable):
             self.update_lb(min(self._values), False)
         if self.ub not in values:
             self.update_ub(max(self._values), False)
+        if self.domain_size() == 1:
+            self.instantiate_to(self.lb, False)
         
         if old_len > self.domain_size():
             if propagate:

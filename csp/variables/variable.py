@@ -22,15 +22,18 @@ class Variable(Observable):
         """Checks if this variable is instantiated."""
         return self.value is not None
     
-    def instantiate_to(self, value):
+    def instantiate_to(self, value, propagate=True):
         """Instantiate this variable to given value.
         
         Subclasses should override this method restricting domain to only 'value' and then call this using super.
         
         :param value: The value of the variable
+        :param propagate: If True then propagation happens, else it won't
+        :type propagate: bool
         """
         self.value = value
-        self.notify()
+        if propagate:
+            self.notify()
     
     def get_value(self):
         """Returns value if it's instantiated, otherwise None.

@@ -17,9 +17,9 @@ class EnumeratedIntVar(IntVariable):
         super(EnumeratedIntVar, self).__init__(name, min(self._values), max(self._values))
 
         
-    def instantiate_to(self, value):
+    def instantiate_to(self, value, propagate=True):
         self._values = [value]
-        super().instantiate_to(value)
+        super().instantiate_to(value, propagate)
     
     @property
     def domain(self):
@@ -35,70 +35,84 @@ class EnumeratedIntVar(IntVariable):
     def contains(self, value):
         return value in self._values
     
-    def __rem_val(self, value):
-        """Same as remove_value but doesn't notify observers.
-        
-        This is used as subroutine in all value removing functions.
-        
-        :param value: The value to remove
-        :type value: int
-        :return: True if value was actually removed, False otherwise
-        :rtype: bool
-        :raise: ContradictionException: If domain wipeout happens
-        """
+    def remove_value(self, value, propagate=True):
         if self.contains(value):
             self._values.remove(value)
-            
+
             if self.domain_size() == 0:
                 raise ContradictionException(self.name + ' domain wipeout, removed last value: ' + str(value))
-                
+
             if value == self.lb:
-                self.update_lb(min(self._values))
+                self.update_lb(min(self._values), False)
             if value == self.ub:
-                self.update_ub(max(self._values))
-            
+                self.update_ub(max(self._values), False)
+
+            if propagate:
+                self.notify()
+
             return True
+
         return False
     
-    def remove_value(self, value):
-        removed = self.__rem_val(value)
-        if removed:
-            self.notify()
-        return removed
+    def remove_values(self, values, propagate=True):
+        old_len = self.domain_size()
+
+        self._values[:] = [v for v in self._values if v not in values]
+
+        if self.domain_size() == 0:
+            raise ContradictionException(self.name + ' domain wipeout, removed all values')
+
+        if self.lb in values:
+            self.update_lb(min(self._values), False)
+        if self.ub in values:
+            self.update_ub(max(self._values), False)
+
+        if old_len > self.domain_size():
+            if propagate:
+                self.notify()
+            return True
+
+        return False
     
-    def remove_values(self, values):
-        removed = False
-        for v in values:
-            removed = removed or self.__rem_val(v)
-        
-        if removed:
-            self.notify()
-        
-        return removed
+    def remove_range(self, start, end, propagate=True):
+        old_len = self.domain_size()
+
+        self._values[:] = [v for v in self._values if v < start or v > end]
+
+        if self.domain_size() == 0:
+            raise ContradictionException(self.name + ' domain wipeout, removed all values')
+
+        if start <= self.lb <= end:
+            self.update_lb(min(self._values), False)
+        if start <= self.ub <= end:
+            self.update_ub(max(self._values), False)
+
+        if old_len > self.domain_size():
+            if propagate:
+                self.notify()
+            return True
+
+        return False
     
-    def remove_range(self, start, end):
-        if end - start < self.domain_size():
-            return self.remove_values(range(start, end + 1))
-        
-        removed = False
-        for v in self._values:
-            if start <= v <= end:
-                removed = self.__rem_val(v)  # always true as we are iterating through domain elements
-        if removed:
-            self.notify()
-        return removed
-    
-    def keep_only_values(self, values):
-        removed = False
+    def keep_only_values(self, values, propagate=True):
         old_len = self.domain_size()
         
         self._values[:] = [v for v in self._values if v in values]
+
+        if self.domain_size() == 0:
+            raise ContradictionException(self.name + ' domain wipeout, removed all values')
+
+        if self.lb not in values:
+            self.update_lb(min(self._values), False)
+        if self.ub not in values:
+            self.update_ub(max(self._values), False)
         
         if old_len > self.domain_size():
-            removed = True
-            self.notify()
+            if propagate:
+                self.notify()
+            return True
                 
-        return removed
+        return False
     
     def push_state(self):
         self.states.append((deepcopy(self._values), self.lb, self.ub, self.value))

@@ -24,9 +24,9 @@ class IntVariable(Variable):
         self.update_ub(ub)  # checks feasibility of bounds
     
     
-    def instantiate_to(self, value):
-        self.update_bounds(value, value)
-        super().instantiate_to(value)
+    def instantiate_to(self, value, propagate=True):
+        self.update_bounds(value, value, False)
+        super().instantiate_to(value, propagate)
     
     @property
     @abstractmethod
@@ -38,20 +38,26 @@ class IntVariable(Variable):
         """Lower bound of domain values."""
         return self._lb
     
-    def update_lb(self, value):
+    def update_lb(self, value, propagate=True):
         """Sets lb to specified value and returns True if bound is actually updated, False otherwise.
         
         :param value: The new value for lower bound
+        :param propagate: If True then propagation happens, else it won't
         :type value: int
+        :type propagate: bool
         :raise: ContradictionException: If domain wipeout happens
+        :return: True if lower bound has been modified, False otherwise
+        :rtype: bool
         """
         if value <= self.lb:
             return False
         if value > self.ub:
             raise ContradictionException(self.name + ' domain wipeout: [' + str(value) + ',' + str(self.ub) + ']')
-        
-        self.remove_range(self.lb, value - 1)
+
         self._lb = value
+        self.remove_range(self.lb, value - 1)
+        if propagate:
+            self.notify()
         return True
     
     @property
@@ -59,34 +65,45 @@ class IntVariable(Variable):
         """Upper bound of domain values."""
         return self._ub
     
-    def update_ub(self, value):
+    def update_ub(self, value, propagate=True):
         """Sets ub to specified value and returns True if bound is actually updated, False otherwise.
         
         :param value: The new value for upper bound
+        :param propagate: If True then propagation happens, else it won't
         :type value: int
+        :type propagate: bool
         :raise: ContradictionException: If domain wipeout happens
+        :return: True if upper bound has been modified, False otherwise
+        :rtype: bool
         """
         if value >= self.ub:
             return False
         if value < self.lb:
             raise ContradictionException(self.name + ' domain wipeout: [' + str(self.lb) + ',' + str(value) + ']')
-        
-        self.remove_range(value + 1, self.ub)
+
         self._ub = value
+        self.remove_range(value + 1, self.ub)
+        if propagate:
+            self.notify()
         return True
     
-    def update_bounds(self, lb, ub):
+    def update_bounds(self, lb, ub, propagate=True):
         """Update bounds to specified values and returns True if any bound is updated, False otherwise.
         
         :param lb: The new value for lower bound
         :param ub: The new value for upper bound
+        :param propagate: If True then propagation happens, else it won't
         :type lb: int
         :type ub: int
+        :type propagate: bool
         :return: True if any bound is updated, False otherwise
         :rtype: bool
-        :raise: ContradictionException: If lb > ub
+        :raise: ContradictionException: If lower bound > upper bound
         """
-        return self.update_lb(lb) or self.update_ub(ub)
+        updated = self.update_lb(lb, False) or self.update_ub(ub, False)
+        if updated and propagate:
+            self.notify()
+        return updated
     
     
     @abstractmethod
@@ -122,13 +139,15 @@ class IntVariable(Variable):
         pass
     
     @abstractmethod
-    def remove_value(self, value):
+    def remove_value(self, value, propagate=True):
         """Removes specified value from domain if it's present.
         
         If the value is actually removed it returns True, otherwise False.
-        
+
         :param value: The value to remove
+        :param propagate: If True then propagation happens, else it won't
         :type value: int
+        :type propagate: bool
         :return: True if value was actually removed, False otherwise
         :rtype: bool
         :raise: ContradictionException: If domain wipeout happens
@@ -136,13 +155,15 @@ class IntVariable(Variable):
         pass
     
     @abstractmethod
-    def remove_values(self, values):
+    def remove_values(self, values, propagate=True):
         """Removes all specified values from domain.
         
         If any value is actually removed returns True, False otherwise.
         values must be iterable.
         
         :param values: The values to remove
+        :param propagate: If True then propagation happens, else it won't
+        :type propagate: bool
         :return: True if any value is actually removed, False otherwise
         :rtype: bool
         :raise: ContradictionException: If domain wipeout happens
@@ -150,15 +171,17 @@ class IntVariable(Variable):
         pass
     
     @abstractmethod
-    def remove_range(self, start, end):
+    def remove_range(self, start, end, propagate=True):
         """Removes all values in specified range (start <= value <= end).
         
         If any value is actually removed returns True, False otherwise.
         
         :param start: the starting value inclusive
         :param end: the ending value inclusive
+        :param propagate: If True then propagation happens, else it won't
         :type start: int
         :type end: int
+        :type propagate: bool
         :return: True if any value is actually removed, False otherwise
         :rtype: bool
         :raise: ContradictionException: If domain wipeout happens
@@ -166,13 +189,15 @@ class IntVariable(Variable):
         pass
     
     @abstractmethod
-    def keep_only_values(self, values):
+    def keep_only_values(self, values, propagate=True):
         """Removes all values from domain but specified ones.
         
         values must be iterable.
         If any value is actually removed returns True, False otherwise.
         
         :param values: The values to remove
+        :param propagate: If True then propagation happens, else it won't
+        :type propagate: bool
         :return: True if any value is actually removed, False otherwise
         :rtype: bool
         :raise: ContradictionException: If domain wipeout happens

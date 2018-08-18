@@ -1,7 +1,7 @@
 from csp.constraints.constraint import Constraint
 
-class DiffNotEqualK(Constraint):
-    """Constraint for expressions of type x - y != k.
+class DiffLessOrEqualK(Constraint):
+    """Constraint for expressions of type x - y <= k.
     
     :param name: The name
     :param var1: The first variable
@@ -29,12 +29,12 @@ class DiffNotEqualK(Constraint):
         if val1 is None or val2 is None:
             return False
         
-        return val1 - val2 != self.value
+        return val1 - val2 <= self.value
     
     def propagate(self, var):
-        val = var.get_value()
-        if val is not None:
-            if var == self.var1:
-                self.var2.remove_value(val - self.value)  # y != x - k
-            else:
-                self.var1.remove_value(val + self.value)  # x != y + k
+        if var is self.var1:
+            # y >= x - k --> y.lb = x.lb - k
+            self.var2.update_lb(self.var1.lb - self.value)
+        else:  # var is self.var2
+            # x <= y + k --> x.ub = y.ub + k
+            self.var1.update_ub(self.var2.ub + self.value)

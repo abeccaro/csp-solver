@@ -25,5 +25,3 @@ class XEqualsK(Constraint):
     
     def propagate(self, var):
         self.var.keep_only_values([self.val])
-        
-        # TODO: remove this constraint from problem (can't propagate more)

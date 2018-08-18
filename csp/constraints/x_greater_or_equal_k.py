@@ -25,5 +25,3 @@ class XGreaterOrEqualK(Constraint):
     
     def propagate(self, var):
         self.var.update_lb(self.val)
-        
-        # TODO: remove this constraint from problem (can't propagate more)

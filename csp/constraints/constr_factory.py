@@ -9,9 +9,14 @@ from csp.constraints.x_not_equal_k import XNotEqualK
 from csp.constraints.x_less_or_equal_k import XLessOrEqualK
 from csp.constraints.x_greater_or_equal_k import XGreaterOrEqualK
 
-from csp.constraints.x_equals_y import XEqualsY
+from csp.constraints.sum_equals_k import SumEqualsK
+from csp.constraints.sum_not_equal_k import SumNotEqualK
+from csp.constraints.sum_less_or_equal_k import SumLessOrEqualK
+from csp.constraints.sum_greater_or_equal_k import SumGreaterOrEqualK
 
+from csp.constraints.diff_equals_k import DiffEqualsK
 from csp.constraints.diff_not_equal_k import DiffNotEqualK
+from csp.constraints.diff_less_or_equal_k import DiffLessOrEqualK
 
 
 __constr_id = -1
@@ -46,9 +51,21 @@ def arithmetic(v1, op1, v2, op2=None, v3=None, name=None):
     Constraints can be of type:
     X op k
     X op Y
-    X op1 Y op2 k, with op1 arithmetic and op2 comparison
-    where X, Y are variables and k is a constant expression
+    X op1 Y op2 k
+    where X, Y are variables and k is a value.
+    Expression should have 1 and only 1 comparison operator.
     
+    :param v1: The first variable X
+    :param op1: The operator between v1 and v2
+    :param v2: The second variable Y for binary constraints or the value k for unary constraints
+    :param op2: The operator between v2 and v3
+    :param v3: The value k
+    :param name: The name of the constraint
+    :type v1: IntVariable
+    :type op1: Operator
+    :type v2: IntVariable for binary constraints or int for unary constraints
+    :type op2: Operator
+    :type v3: int
     :return: The constraint representing given expression
     :rtype: Constraint
     """
@@ -59,20 +76,18 @@ def arithmetic(v1, op1, v2, op2=None, v3=None, name=None):
     
     if op2 is None:
         if isinstance(v2, Variable):  # var1 op1 var2
-            if op1 is Operator.eq:  # X = Y
-                return XEqualsY(name, v1, v2)
-            elif op1 is Operator.ne:  # X != Y
-                raise NotImplementedError()
-            elif op1 is Operator.lt:  # X < Y
-                raise NotImplementedError()
-            elif op1 is Operator.le:  # X <= Y
-                raise NotImplementedError()
-            elif op1 is Operator.gt:  # X > Y
-                raise NotImplementedError()
-            elif op1 is Operator.ge:  # X >= Y
-                raise NotImplementedError()
-            else:
-                raise err
+            if op1 is Operator.eq:  # X = Y --> X - Y = 0
+                return DiffEqualsK(name, v1, v2, 0)
+            elif op1 is Operator.ne:  # X != Y --> X - Y != 0
+                return DiffNotEqualK(name, v1, v2, 0)
+            elif op1 is Operator.lt:  # X < Y --> X - Y <= -1
+                return DiffLessOrEqualK(name, v1, v2, -1)
+            elif op1 is Operator.le:  # X <= Y --> X - Y <= 0
+                return DiffLessOrEqualK(name, v1, v2, 0)
+            elif op1 is Operator.gt:  # X > Y --> Y - X <= -1
+                return DiffLessOrEqualK(name, v1, v2, -1)
+            elif op1 is Operator.ge:  # X >= Y --> Y - X <= 0
+                return DiffLessOrEqualK(name, v2, v1, 0)
 
         else:  # var1 op1 val
             if op1 is Operator.eq:  # X = k
@@ -87,39 +102,38 @@ def arithmetic(v1, op1, v2, op2=None, v3=None, name=None):
                 return XGreaterOrEqualK(name, v1, v2 + 1)
             elif op1 is Operator.ge:  # X >= k
                 return XGreaterOrEqualK(name, v1, v2)
-            else:
-                raise err
 
     else:  # var1 op1 var2 op2 val
         if op1 is Operator.plus:
             if op2 is Operator.eq:  # X + Y = k
-                raise NotImplementedError()
+                return SumEqualsK(name, v1, v2, v3)
             if op2 is Operator.ne:  # X + Y != k
-                raise NotImplementedError()
-            if op2 is Operator.lt:  # X + Y < k
-                raise NotImplementedError()
+                return SumNotEqualK(name, v1, v2, v3)
+            if op2 is Operator.lt:  # X + Y < k --> X + Y <= k-1
+                return SumLessOrEqualK(name, v1, v2, v3 - 1)
             if op2 is Operator.le:  # X + Y <= k
-                raise NotImplementedError()
-            if op2 is Operator.gt:  # X + Y > k
-                raise NotImplementedError()
+                return SumLessOrEqualK(name, v1, v2, v3)
+            if op2 is Operator.gt:  # X + Y > k --> X + Y >= k+1
+                return SumGreaterOrEqualK(name, v1, v2, v3 + 1)
             if op2 is Operator.ge:  # X + Y >= k
-                raise NotImplementedError()
-            else:
-                raise err
+                return SumGreaterOrEqualK(name, v1, v2, v3)
+
         elif op1 is Operator.minus:
             if op2 is Operator.eq:  # X - Y = k
-                raise NotImplementedError()
+                return DiffEqualsK(name, v1, v2, v3)
             if op2 is Operator.ne:  # X - Y != k
                 return DiffNotEqualK(name, v1, v2, v3)
-            if op2 is Operator.lt:  # X - Y < k
-                raise NotImplementedError()
+            if op2 is Operator.lt:  # X - Y < k --> X - Y <= k-1
+                return DiffLessOrEqualK(name, v1, v2, v3 - 1)
             if op2 is Operator.le:  # X - Y <= k
-                raise NotImplementedError()
-            if op2 is Operator.gt:  # X - Y > k
-                raise NotImplementedError()
-            if op2 is Operator.ge:  # X - Y >= k
-                raise NotImplementedError()
-            else:
-                raise err
-        else:
-            raise err
+                return DiffLessOrEqualK(name, v1, v2, v3)
+            if op2 is Operator.gt:  # X - Y > k --> Y - X <= -(k - 1)
+                return DiffLessOrEqualK(name, v2, v1, -(v3 + 1))
+            if op2 is Operator.ge:  # X - Y >= k --> Y - X <= -k
+                return DiffLessOrEqualK(name, v2, v1, -v3)
+
+        elif not op2.is_comparison_op():
+            new_val = v3 if op2 is Operator.plus else -v3
+            return arithmetic(v1, Operator.minus, v2, op1, new_val)
+
+    raise err

@@ -25,5 +25,3 @@ class XNotEqualK(Constraint):
     
     def propagate(self, var):
         self.var.remove_value(self.val)
-        
-        # TODO: remove this constraint from problem (can't propagate more)

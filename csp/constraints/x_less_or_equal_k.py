@@ -25,5 +25,3 @@ class XLessOrEqualK(Constraint):
     
     def propagate(self, var):
         self.var.update_ub(self.val)
-        
-        # TODO: remove this constraint from problem (can't propagate more)

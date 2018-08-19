@@ -1,6 +1,5 @@
 from csp.solver import Solver
-from csp import ContradictionException
-from csp.propagators import ArcConsistencyPropagator
+from csp import ContradictionException, ArcConsistencyPropagator, MinRemainingValues
 
 
 class BacktrackSolver(Solver):
@@ -10,8 +9,8 @@ class BacktrackSolver(Solver):
     :type prop: Propagator
     """
     
-    def __init__(self, prop=ArcConsistencyPropagator()):
-        super(BacktrackSolver, self).__init__(prop)
+    def __init__(self, prop=ArcConsistencyPropagator(), var_ordering=MinRemainingValues()):
+        super().__init__(prop, var_ordering)
     
     
     def _solve(self, problem):
@@ -35,12 +34,7 @@ class BacktrackSolver(Solver):
             return True
         
         # choosing next variable to instantiate
-        # TODO: implement variable ordering strategies
-        var = None
-        for v in problem.variables:
-            if not v.is_instantiated():
-                var = v
-                break
+        var = self.var_ordering.next_var()
         
         if var is None:  # if all variables are already instantiated
             return False

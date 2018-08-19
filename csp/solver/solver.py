@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 
-from csp.propagators import ArcConsistencyPropagator
+from csp import ArcConsistencyPropagator, MinRemainingValues
 
 
 class Solver(ABC):
@@ -10,8 +10,9 @@ class Solver(ABC):
     :type prop: Propagator
     """
     
-    def __init__(self, prop=ArcConsistencyPropagator()):
+    def __init__(self, prop=ArcConsistencyPropagator(), var_ordering=MinRemainingValues()):
         self.prop = prop
+        self.var_ordering = var_ordering
     
     
     def solve(self, problem):
@@ -23,6 +24,7 @@ class Solver(ABC):
         :rtype: bool
         """
         self.prop.setup(problem)
+        self.var_ordering.setup(problem)
         
         return self._solve(problem)
     

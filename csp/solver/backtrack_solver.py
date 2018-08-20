@@ -1,5 +1,7 @@
+import time
+
 from csp.solver import Solver
-from csp import ContradictionException, ArcConsistencyPropagator, MinRemainingValues
+from csp import ContradictionException, ArcConsistencyPropagator, MinRemainingValues, SearchStatistics
 
 
 class BacktrackSolver(Solver):
@@ -14,29 +16,39 @@ class BacktrackSolver(Solver):
     
     
     def _solve(self, problem):
+        stats = SearchStatistics()
+        start = time.time()
+
         # initial propagation
         for v in problem.variables:
             v.notify()
         
-        # starting search
-        return self._solve_recursive(problem)
+        # starting recursive search
+        solved = self._solve_recursive(problem, stats)
+
+        stats.time = time.time() - start
+        return solved, stats
     
-    def _solve_recursive(self, problem):
+    def _solve_recursive(self, problem, stats):
         """Solves given problem using backtracking logic.
         
         :param problem: The problem to solver
+        :param stats: The search statistics to update
         :type problem: Problem
+        :type stats: SearchStatistics
         :return: True if problem has been solved, False otherwise
         :rtype: bool
         """
         # checking if problem is solved
         if problem.is_solved():
+            stats.explored += 1
             return True
         
         # choosing next variable to instantiate
         var = self.var_ordering.next_var()
         
         if var is None:  # if all variables are already instantiated
+            stats.explored += 1
             return False
         
         # choosing value to instantiate var to
@@ -53,10 +65,11 @@ class BacktrackSolver(Solver):
                 # backtrack and try next value
                 for v in problem.variables:
                     v.pop_state()
+                stats.backtracks += 1
                 continue
             
             # recursive search
-            solved = self._solve_recursive(problem)
+            solved = self._solve_recursive(problem, stats)
             
             if solved:
                 return True
@@ -64,6 +77,7 @@ class BacktrackSolver(Solver):
             # backtrack
             for v in problem.variables:
                 v.pop_state()
+            stats.backtracks += 1
         
         # if no value of var leads to a solution, fail
         return False

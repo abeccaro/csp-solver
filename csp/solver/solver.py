@@ -20,8 +20,9 @@ class Solver(ABC):
         
         :param problem: The problem to solve
         :type problem: Problem
-        :return: True if problem has been solved, False otherwise
-        :rtype: bool
+        :return: (solved, stats) where solved is True if problem has been solved, False otherwise and stats are search
+                 statistics
+        :rtype: (bool, SearchStatistics)
         """
         self.prop.setup(problem)
         self.var_ordering.setup(problem)
@@ -36,7 +37,8 @@ class Solver(ABC):
         
         :param problem: The problem to solve
         :type problem: Problem
-        :return: True if problem has been solved, False otherwise
-        :rtype: bool
+        :return: (solved, stats) where solved is True if problem has been solved, False otherwise and stats are search
+                 statistics
+        :rtype: (bool, SearchStatistics)
         """
         pass

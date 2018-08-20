@@ -70,7 +70,7 @@ class SudokuTests(unittest.TestCase):
 
         solver = BacktrackSolver()
 
-        solver.solve(prob)
+        solved, stats = solver.solve(prob)
         solution = [[v.get_value() for v in row] for row in vars]
 
         expected = [
@@ -86,6 +86,7 @@ class SudokuTests(unittest.TestCase):
         ]
 
         self.assertEqual(solution, expected)
+        print(stats)
 
     # Hard
     def test_sudoku_2(self):
@@ -104,7 +105,7 @@ class SudokuTests(unittest.TestCase):
 
         solver = BacktrackSolver()
 
-        solver.solve(prob)
+        solved, stats = solver.solve(prob)
         solution = [[v.get_value() for v in row] for row in vars]
 
         expected = [
@@ -120,6 +121,7 @@ class SudokuTests(unittest.TestCase):
         ]
 
         self.assertEqual(solution, expected)
+        print(stats)
 
     # Hard
     def test_sudoku_3(self):
@@ -138,7 +140,7 @@ class SudokuTests(unittest.TestCase):
 
         solver = BacktrackSolver()
 
-        solver.solve(prob)
+        solved, stats = solver.solve(prob)
         solution = [[v.get_value() for v in row] for row in vars]
 
         expected = [
@@ -154,6 +156,7 @@ class SudokuTests(unittest.TestCase):
         ]
 
         self.assertEqual(solution, expected)
+        print(stats)
 
 
 if __name__ == '__main__':

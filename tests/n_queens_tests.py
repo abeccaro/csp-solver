@@ -41,24 +41,26 @@ class NQueensTests(unittest.TestCase):
 
         solver = BacktrackSolver()
 
-        solved = solver.solve(prob)
+        solved, stats = solver.solve(prob)
 
         self.assertEqual(solved, False)
 
         print('\n2 queens:\nNo solution')
+        print(stats)
 
     def test_8x8(self):
         prob, vars = self._n_queens_problem(8)
 
         solver = BacktrackSolver()
 
-        solved = solver.solve(prob)
+        solved, stats = solver.solve(prob)
 
         self.assertEqual(solved, True)
 
         solution = [v.get_value() for v in vars]
         print('\n8 queens:')
         pprint(solution)
+        print(stats)
 
 
 if __name__ == '__main__':

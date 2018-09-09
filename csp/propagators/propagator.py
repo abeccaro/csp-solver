@@ -31,10 +31,8 @@ class Propagator(Observer):
         """
         for v in problem.variables:
             v.add_observer(self)
-    
+            self.map[v] = []
+
         for c in problem.constraints:
             for v in c.get_vars():
-                if v in self.map:
-                    self.map[v].append(c)
-                else:
-                    self.map[v] = [c]
+                self.map[v].append(c)

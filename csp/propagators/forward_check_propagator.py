@@ -8,10 +8,10 @@ class ForwardCheckPropagator(Propagator):
     def __init__(self):
         super().__init__()
         self.propagating = False
-        
+
     
     def on_domain_change(self, var):
-        if not self.propagating and var in self.map:
+        if not self.propagating:
             self.propagating = True
             
             for c in self.map[var]:

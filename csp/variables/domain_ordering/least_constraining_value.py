@@ -30,8 +30,7 @@ class LeastConstrainingValue(DomainOrderingStrategy):
 
 
     def ordered_domain(self):
-        sums = []
-        values = []
+        counts = []
 
         for value in self.var.domain:
             # save state
@@ -57,8 +56,7 @@ class LeastConstrainingValue(DomainOrderingStrategy):
 
                 self.propagator.enabled = True
 
-                sums.append(sum)
-                values.append(value)
+                counts.append((sum, value))
                 continue
 
             # calculating sum of remaining values and reverting state
@@ -69,8 +67,8 @@ class LeastConstrainingValue(DomainOrderingStrategy):
             self.var.pop_state()
 
             # appending to calculated lists
-            sums.append(sum)
-            values.append(value)
+            counts.append((sum, value))
 
         # sorting by neighbours remaining values
-        return [v for _, v in sorted(zip(sums, values), reverse=True)]
+        counts.sort(reverse=True)
+        return [v for _, v in counts]

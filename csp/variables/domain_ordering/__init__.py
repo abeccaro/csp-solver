@@ -1,3 +1,4 @@
 from csp.variables.domain_ordering.domain_ordering_strategy import DomainOrderingStrategy
 
 from csp.variables.domain_ordering.default_value_order import DefaultValueOrder
+from csp.variables.domain_ordering.least_constraining_value import LeastConstrainingValue

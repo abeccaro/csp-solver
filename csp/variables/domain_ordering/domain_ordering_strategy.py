@@ -7,11 +7,13 @@ class DomainOrderingStrategy(ABC):
         self.var = None
 
 
-    def setup(self, problem):
+    def setup(self, problem, propagator):
         """Called to initialize this ordering strategy with problem data.
 
         :param problem: The csp
+        :param propagator: The solver propagator
         :type problem: Problem
+        :type propagator: Propagator
         """
         pass
 

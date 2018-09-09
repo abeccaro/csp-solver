@@ -8,6 +8,7 @@ class Propagator(Observer):
     
     def __init__(self):
         super().__init__()
+        self.enabled = True
         self.map = {}
     
     

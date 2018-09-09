@@ -9,5 +9,6 @@ class ArcConsistencyPropagator(Propagator):
 
     
     def on_domain_change(self, var):
-        for c in self.map[var]:
-            c.propagate(var)
+        if self.enabled:
+            for c in self.map[var]:
+                c.propagate(var)

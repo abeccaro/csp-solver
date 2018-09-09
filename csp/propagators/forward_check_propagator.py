@@ -11,14 +11,14 @@ class ForwardCheckPropagator(Propagator):
 
     
     def on_domain_change(self, var):
-        if not self.propagating:
-            self.propagating = True
+        if self.enabled:
+            self.enabled = False
             
             for c in self.map[var]:
                 try:
                     c.propagate(var)
                 except ContradictionException:
-                    self.propagating = False
+                    self.enabled = True
                     raise
             
-            self.propagating = False
+            self.enabled = True

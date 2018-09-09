@@ -10,10 +10,13 @@ class Variable(Observable):
     :type name: str
     """
     
-    def __init__(self, name):
+    def __init__(self, name, domain_ordering):
         super().__init__()
         self.name = name
         self.value = None  # value, None if not yet instantiated
+
+        self.domain_ordering = domain_ordering  # value ordering strategy
+        self.domain_ordering.var = self
 
         self.states = []  # states to backtrack
     
@@ -28,7 +31,7 @@ class Variable(Observable):
         Subclasses should override this method restricting domain to only 'value' and then call this using super.
         
         :param value: The value of the variable
-        :param propagate: If True then propagation happens, else it won't
+        :param propagate: If True then propagation happens, else it doesn't
         :type propagate: bool
         """
         self.value = value
@@ -41,6 +44,14 @@ class Variable(Observable):
         :return: The value if it's instantiated, otherwise None
         """
         return self.value
+
+    def ordered_domain(self):
+        """Returns an ordered copy of this variable domain.
+
+        :return: An ordered copy of this variable domain
+        :rtype: list
+        """
+        return self.domain_ordering.ordered_domain()
     
     @abstractmethod
     def push_state(self):

@@ -51,9 +51,10 @@ class BacktrackSolver(Solver):
             stats.explored += 1
             return False
         
-        # choosing value to instantiate var to
-        # TODO: implement domain ordering strategies
-        for value in var:
+        # for each possible value of var
+        dom = var.ordered_domain()
+        for value in dom:
+
             # push state for backtracking
             for v in problem.variables:
                 v.push_state()
@@ -63,9 +64,7 @@ class BacktrackSolver(Solver):
                 var.instantiate_to(value)
             except ContradictionException:
                 # backtrack and try next value
-                for v in problem.variables:
-                    v.pop_state()
-                stats.backtracks += 1
+                self._backtrack(var, value, stats, problem.variables)
                 continue
             
             # recursive search
@@ -74,10 +73,19 @@ class BacktrackSolver(Solver):
             if solved:
                 return True
             
-            # backtrack
-            for v in problem.variables:
-                v.pop_state()
-            stats.backtracks += 1
+            self._backtrack(var, value, stats, problem.variables)
         
         # if no value of var leads to a solution, fail
         return False
+
+    @staticmethod
+    def _backtrack(var, value, stats, all_vars):
+        for v in all_vars:
+            v.pop_state()
+
+        try:
+            var.remove_value(value, False)
+        except ContradictionException:
+            pass
+
+        stats.backtracks += 1

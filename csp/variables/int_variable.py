@@ -17,8 +17,8 @@ class IntVariable(Variable):
     :type ub: int
     """
     
-    def __init__(self, name, lb, ub):
-        super(IntVariable, self).__init__(name)
+    def __init__(self, name, domain_ordering, lb, ub):
+        super(IntVariable, self).__init__(name, domain_ordering)
         self._lb = lb
         self._ub = ub
         self.update_ub(ub)  # checks feasibility of bounds

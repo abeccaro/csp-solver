@@ -12,9 +12,9 @@ class EnumeratedIntVar(IntVariable):
     :type name: str
     """
     
-    def __init__(self, name, values):
+    def __init__(self, name, domain_ordering, values):
         self._values = list(values)
-        super(EnumeratedIntVar, self).__init__(name, min(self._values), max(self._values))
+        super(EnumeratedIntVar, self).__init__(name, domain_ordering, min(self._values), max(self._values))
 
         
     def instantiate_to(self, value, propagate=True):

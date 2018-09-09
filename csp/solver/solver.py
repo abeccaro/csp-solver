@@ -26,6 +26,8 @@ class Solver(ABC):
         """
         self.prop.setup(problem)
         self.var_ordering.setup(problem)
+        for var in problem.variables:
+            var.domain_ordering.setup(problem)
         
         return self._solve(problem)
     

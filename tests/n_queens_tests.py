@@ -62,6 +62,25 @@ class NQueensTests(unittest.TestCase):
         pprint(solution)
         print(stats)
 
+    def test_100x100(self):
+        prob, vars = self._n_queens_problem(100)
+
+        solver = BacktrackSolver()
+
+        solved, stats = solver.solve(prob)
+
+        self.assertEqual(solved, True)
+
+        solution = [v.get_value() for v in vars]
+        print('\n100 queens:')
+        pprint(solution)
+        print(stats)
+
 
 if __name__ == '__main__':
-    unittest.main()
+    suite = unittest.TestSuite()
+    suite.addTest(NQueensTests('test_2x2'))
+    suite.addTest(NQueensTests('test_8x8'))
+    suite.addTest(NQueensTests('test_100x100'))
+
+    unittest.TextTestRunner().run(suite)

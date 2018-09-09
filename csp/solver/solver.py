@@ -24,11 +24,20 @@ class Solver(ABC):
                  statistics
         :rtype: (bool, SearchStatistics)
         """
+        # apply node consistency (unary constraints)
+        for c in problem.constraints[:]:
+            vars = c.get_vars()
+            if len(vars) == 1:
+                c.propagate(vars[0])
+                problem.constraints.remove(c)
+
+        # setup strategies
         self.prop.setup(problem)
         self.var_ordering.setup(problem)
         for var in problem.variables:
             var.domain_ordering.setup(problem, self.prop)
-        
+
+        # call search
         return self._solve(problem)
     
     @abstractmethod

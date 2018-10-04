@@ -40,3 +40,13 @@ class Constraint(ABC):
         :type var: Variable
         """
         pass
+
+    @abstractmethod
+    def count_removals(self, var, val):
+        """Counts how many values would be removed from variables domains if var = val is done.
+
+        :param var: The assigned variable
+        :param val: The value to assign
+        :type var: Variable
+        """
+        pass

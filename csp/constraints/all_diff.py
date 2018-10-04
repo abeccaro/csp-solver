@@ -35,3 +35,12 @@ class AllDiff(Constraint):
             for v in self.vars:
                 if v != var:
                     v.remove_value(val)
+
+    def count_removals(self, var, val):
+        count = 0
+
+        for v in self.vars:
+            if v is not var and v.contains(val):
+                count += 1
+
+        return count

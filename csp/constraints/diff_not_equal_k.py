@@ -34,7 +34,12 @@ class DiffNotEqualK(Constraint):
     def propagate(self, var):
         val = var.get_value()
         if val is not None:
-            if var == self.var1:
+            if var is self.var1:
                 self.var2.remove_value(val - self.value)  # y != x - k
             else:
                 self.var1.remove_value(val + self.value)  # x != y + k
+
+    def count_removals(self, var, val):
+        if (var is self.var1 and self.var2.contains(val - self.value)) or self.var1.contains(val + self.value):
+            return 1
+        return 0

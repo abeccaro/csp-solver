@@ -43,3 +43,13 @@ class DiffEqualsK(Constraint):
             for v in var:
                 values.append(v + self.value)
             self.var1.keep_only_values(values)
+
+    def count_removals(self, var, val):
+        if var is self.var1:
+            if self.var2.contains(val - self.value):
+                return self.var2.domain_size() - 1
+            return self.var2.domain_size()
+        else:  # var is self.var2
+            if self.var1.contains(val + self.value):
+                return self.var1.domain_size() - 1
+            return self.var1.domain_size()

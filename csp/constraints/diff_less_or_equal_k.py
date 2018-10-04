@@ -38,3 +38,9 @@ class DiffLessOrEqualK(Constraint):
         else:  # var is self.var2
             # x <= y + k --> x.ub = y.ub + k
             self.var1.update_ub(self.var2.ub + self.value)
+
+    def count_removals(self, var, val):
+        if var is self.var1:
+            return sum(value < val - self.value for value in self.var2)
+        else:  # var is self.var2
+            return sum(value > val + self.value for value in self.var1)

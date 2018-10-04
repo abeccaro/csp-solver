@@ -37,3 +37,9 @@ class SumEqualsK(Constraint):
         for v in var:
             values.append(self.value - v)
         other.keep_only_values(values)
+
+    def count_removals(self, var, val):
+        other = self.var1 if var is self.var2 else self.var2
+        if other.contains(self.value - val):
+            return other.domain_size() - 1
+        return other.domain_size()

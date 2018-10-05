@@ -6,10 +6,26 @@ class MinRemainingValues(VarOrderingStrategy):
 
     def __init__(self):
         super().__init__()
+        self.map = {}
+
+    def setup(self, problem):
+        """Called to initialize this propagator with problem data
+
+        :param problem: The csp
+        :type problem: Problem
+        """
+        super().setup(problem)
+
+        for v in self.vars:
+            self.map[v] = []
+
+        for c in problem.constraints:
+            for v in c.get_vars():
+                self.map[v].append(c)
 
 
     def next_var(self):
-        self.vars.sort(key=lambda v: v.domain_size())
+        self.vars.sort(key=lambda v: (v.domain_size(), -len(self.map[v])))
 
         for v in self.vars:
             if not v.is_instantiated():

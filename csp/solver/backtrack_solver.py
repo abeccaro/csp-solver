@@ -21,7 +21,10 @@ class BacktrackSolver(Solver):
 
         # initial propagation
         for v in problem.variables:
-            v.notify()
+            if v.domain_size() == 1:
+                v.instantiate_to(v.domain[0])
+            else:
+                v.notify()
         
         # starting recursive search
         solved = self._solve_recursive(problem, stats)
